@@ -1,9 +1,103 @@
+// schema.prisma
+
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+model Usuario {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  nombre    String
+  password  String
+  rol       Rol      @default(VENDEDOR)
+  activo    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Rol {
+  ADMIN
+  VENDEDOR
+}
+
+model Vehiculo {
+  id              String         @id @default(cuid())
+  marca           String
+  modelo          String
+  anio            Int
+  precio          Decimal        @db.Decimal(10, 2)
+  kilometraje     Int
+  combustible     TipoCombustible
+  transmision     TipoTransmision
+  color           String
+  puertas         Int
+  motor           String?
+  descripcion     String?        @db.Text
+  estado          EstadoVehiculo @default(DISPONIBLE)
+  destacado       Boolean        @default(false)
+  imagenes        Imagen[]
+  caracteristicas Caracteristica[]
+  consultas       Consulta[]
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+}
+
+enum TipoCombustible {
+  NAFTA
+  DIESEL
+  ELECTRICO
+  HIBRIDO
+  GNC
+}
+
+enum TipoTransmision {
+  MANUAL
+  AUTOMATICA
+  SECUENCIAL
+}
+
+enum EstadoVehiculo {
+  DISPONIBLE
+  RESERVADO
+  VENDIDO
+}
+
+model Imagen {
+  id         String   @id @default(cuid())
+  url        String
+  vehiculoId String
+  vehiculo   Vehiculo @relation(fields: [vehiculoId], references: [id], onDelete: Cascade)
+  orden      Int      @default(0)
+  createdAt  DateTime @default(now())
+}
+
+model Caracteristica {
+  id         String   @id @default(cuid())
+  nombre     String   // "ABS", "Airbags", "Aire acondicionado", etc.
+  vehiculoId String
+  vehiculo   Vehiculo @relation(fields: [vehiculoId], references: [id], onDelete: Cascade)
+}
+
+model Consulta {
+  id         String        @id @default(cuid())
+  nombre     String
+  email      String
+  telefono   String
+  mensaje    String        @db.Text
+  vehiculoId String?
+  vehiculo   Vehiculo?     @relation(fields: [vehiculoId], references: [id])
+  estado     EstadoConsulta @default(PENDIENTE)
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+}
+
+enum EstadoConsulta {
+  PENDIENTE
+  CONTACTADO
+  CERRADO
 }
