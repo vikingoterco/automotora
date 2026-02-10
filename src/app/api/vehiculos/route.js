@@ -1,5 +1,5 @@
 // src/app/api/vehiculos/route.js
-import prisma from '@/lib/prisma'
+import prisma from '../../../lib/prisma.js'
 
 export async function GET(request) {
   try {
