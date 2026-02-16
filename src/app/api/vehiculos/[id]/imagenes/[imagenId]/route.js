@@ -41,14 +41,18 @@ export async function DELETE(request, { params }) {
     }
 
     // 2. Obtener parámetros
-    const { id: vehiculoId, imagenId } = params
+    // 2. Obtener parámetros
+  const { id: vehiculoId, imagenId } = await params
 
-    if (!vehiculoId || !imagenId) {
-      return NextResponse.json(
-        { success: false, error: 'Parámetros inválidos' },
-        { status: 400 }
-      )
-    }
+  console.log('PARAMS:', { vehiculoId, imagenId })
+
+  if (!vehiculoId || !imagenId) {
+    return NextResponse.json(
+      { success: false, error: 'Parámetros inválidos' },
+      { status: 400 }
+    )
+}
+
 
     // 3. Verificar que el vehículo existe
     const vehiculo = await prisma.vehiculo.findUnique({
