@@ -1,6 +1,6 @@
 // src/app/api/vehiculos/[id]/route.js
 
-import prisma from '../../../../lib/prisma.js'
+import prisma from '@/lib/prisma'
 
 /* ========================================
    FUNCIONES AUXILIARES
