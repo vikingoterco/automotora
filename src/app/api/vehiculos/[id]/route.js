@@ -1,5 +1,3 @@
-// src/app/api/vehiculos/[id]/route.js
-
 import prisma from '../../../../lib/prisma.js'
 
 function formatearVehiculo(vehiculo) {
@@ -9,9 +7,11 @@ function formatearVehiculo(vehiculo) {
   }
 }
 
-export async function GET(request, { params }) {
+export async function GET(request) {
   try {
-    const { id } = params
+    // Extraer ID directamente desde la URL
+    const pathname = request.nextUrl.pathname
+    const id = pathname.split("/").pop()
 
     if (!id) {
       return Response.json(
@@ -44,7 +44,7 @@ export async function GET(request, { params }) {
     })
 
   } catch (error) {
-    console.error("Error en GET por ID:", error)
+    console.error("❌ Error en GET por ID:", error)
 
     return Response.json(
       { success: false, error: error.message },
